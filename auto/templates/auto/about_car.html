@@ -1,0 +1,88 @@
+{% extends 'auto/basic.html' %}
+{% block title %}Прокат авто{% endblock %}
+{% block body %}
+<H1 align="center"> {{car.mark}} {{car.model}} </H1>
+<section class="category-filter mb-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <figure class="mb-0">
+                    <img src="{{ car.photo }}" alt="car.mark" width="100%" height="100%"></figure>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-6" >
+                        {% if user.is_authenticated %}
+                        <form action="" method="POST">
+                                {% csrf_token %}
+                                <details>
+                                <summary><p class="category-car-price font-weight-bold mb-0 d-inline-block" style="font-size: 20px;"><span> {{car.price_day}} ГРН </span>за сутки</p></summary>
+                                    <div class="col-md-2">
+                                        <input  size="15%" class="form" placeholder="Новая цена" name="new_price">
+                                    </div>
+                                    <div class="col-md-2" >
+                                         <input style="width: 162px;" type="submit" class="btn btn-warning"  value="Принять">
+                                    </div>
+                                </details>
+                            </form>
+                        {% else %}
+                        <p class="category-car-price font-weight-bold mb-0 d-inline-block" style="font-size: 20px;"><span> {{car.price_day}} ГРН </span>за сутки</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'bronirovanie_id' car.id %}" class="btn btn-warning" style="font-size: 24px;">Бронировать</a>
+                    </div>
+                </div>
+                <div class="col-5 text-left" data-toggle="tooltip" data-placement="top">
+                     
+                </div>
+                <div class="col-5 text-left" data-toggle="tooltip" data-placement="top">
+                    Класс авто: {{ car.clas }}
+                </div>
+                <div class="col-5 text-left" data-toggle="tooltip" data-placement="top">
+                    Тип кузова: {{ car.body }}
+                </div>
+                <div class="col-5 text-left" data-toggle="tooltip" data-placement="top">
+                    Макс. пасажиров: {{ car.passengers }}
+                </div>
+                <div class="col-5 text-left" data-toggle="tooltip" data-placement="top">
+                    Трансмиссия: {{ car.transmission }}
+                </div>
+                <div class="col-5 text-left" data-toggle="tooltip" data-placement="top">
+                    Объем двигателя: {{ car.engine_capacity }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<h2 style="text-align: center;">Отзывы о {{car.mark}} {{car.model}}:</h2>
+<section class="category-filter mb-4">
+    <div class="container">
+        <div class="row align-items-center">
+            {% if reviews %}
+            <div class="col-md-12 border">
+                {% for review in reviews %}
+                    <span style="float:left;">{{ review.author_name }}</span>
+                    <span style="float:right;">{{ review.publication_date }}</span>
+                    <p style="float:left;">{{ review.text }}</p>
+                {% endfor %}
+            </div>
+            {% else %}
+            <h5 style="text-align: left;">   Отзывов еще нет. Станьте первым!</h5>
+            {% endif %}
+
+            <div class="col-md-12">
+                <form class="form-horizontal" name="form1" role="form" action="" method="post" enctype="multipart/form-data" >
+                    {% csrf_token %}
+                    {{ review_form.as_p }}
+                    <input type="submit" name="" value="Опубликовать">
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $('label[for=id_car], input#id_car').hide();
+    document.forms['form1']['id_car'].hidden = true;
+</script>
+{% endblock %}

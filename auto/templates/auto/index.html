@@ -1,0 +1,114 @@
+{% extends 'auto/basic.html' %}
+{% block title %}Прокат авто{% endblock %}
+{% block body %}
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form name="form1" action="" method="get">
+                <div class="row " style="padding:10px;">
+                    <div class="col-md-1">
+                        <p> </p>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="custom-select" size="1" name="clas_type">
+                            <option selected="selected" disabled>Класс автомобиля</option>
+                            <option value="Бюджетные">Бюджетные</option>
+                            <option value="Внедорожники">Внедорожники</option>
+                            <option value="Комфорт">Комфорт</option>
+                            <option value="Премиум">Премиум</option>
+                       </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="custom-select" size="1" name="trans_type">
+                            <option selected="selected" disabled>Тип трансмиссии</option>
+                            <option value="Автомат">Автомат</option>
+                            <option value="Ручная">Ручная</option>
+                   </select>
+                    </div>
+                   <div class="col-md-2">
+                        <select size="1" name="body_type" class="custom-select">
+                            <option selected="selected" disabled>Тип кузова</option>
+                            <option value="Седан">Седан</option>
+                            <option value="Внедорожник">Внедорожник</option>
+                            <option value="Купе">Купе</option>
+                            <option value="Минивен">Минивен</option>
+                   </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select size="1" name="price" class="custom-select">
+                       <option selected="selected" disabled >По цене</option>
+                        <option value="price_day">От дешевых к дорогим</option>
+                        <option value="-price_day">От дорогих к дешевым</option>
+                   </select>
+                    </div>
+               <p><input type="submit" value="Поиск" class="btn btn-warning" style="font-size: 14px;"></p>
+                </div>
+              </form>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="col-md-1">
+                        <p> </p>
+                    </div>
+         <div class="col-md-8">
+             <a href="{% url 'add_car' %}"><button type="button" value="Добавить авто" class="btn btn-warning " style="font-size: 18px;">Добавить авто</button></a>
+        </div>
+        <div class="col-md-2">
+             <a href="{% url 'stats' %}"><button type="button" value="Общая статистика" class="btn btn-warning " style="font-size: 18px;">Общая статистика</button></a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        {% if cars %}
+        {% for car in cars %}
+        <div class="col-md-4">
+            <div class="card" style=" margin:50px; padding:10px; width: 30rem;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <a href="{% url 'about_car' car.id %}"><h4 class="card-title"><strong>{{ car.mark }} {{ car.model }}</strong></h4></a>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <div class="col-md-2">
+                            <a href="{% url 'stats_id' car.id %}"><img src="https://cdn3.iconfinder.com/data/icons/e-commerce-8/91/stats-512.png" style="align:right; width:100%"></a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="row" style=" padding-bottom:10px;">
+                        <div class="col-md-6">
+                            <img style="width:13%" src="https://use.fontawesome.com/releases/v5.0.13/svgs/solid/gas-pump.svg" > Бензин {{ car.engine_capacity }}
+                        </div>
+                        <div class="col-md-6">
+                            <img style="width:13%" src="https://cdn1.iconfinder.com/data/icons/rcons-transport/32/transmission_manual-32.png" > {{ car.transmission }}
+                         </div>
+                        <div class="col-md-6">
+                            <img style="width:13%; " src="https://seeklogo.com/images/N/Nautical_Star-logo-37A929F49F-seeklogo.com.png" > {{ car.clas }}
+                        </div>
+                        <div class="col-md-6">
+                            <img style="width:17%; " src="https://d30y9cdsu7xlg0.cloudfront.net/png/61811-200.png" > {{ car.body }}
+                        </div>
+                    </div>
+                    <img src="{{ car.photo }}" class="w3-round-large" alt="Norway" width="100%" height="70%">
+                    <div class="row border-top" style=" padding-top:10px;">
+                        <div class="col-md-6">
+                            <h5><b>{{ car.price_day }} ГРН/сутки</b></h5>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'bronirovanie_id' car.id %}" class="btn btn-warning" style="font-size: 18px;">Забронировать</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endfor %}
+{% else %}
+    </div>
+</div>
+        <h3>Нет автомобилей</h3>
+{% endif %}
+{% endblock %}

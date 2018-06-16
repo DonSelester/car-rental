@@ -1,0 +1,42 @@
+{% extends 'auto/basic.html' %}
+{% block title %}Статистика{% endblock %}
+{% block login_active %}active{% endblock %}
+
+{% block body %}
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <div id="chart_div"></div>
+<script>
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawBasic);
+
+function drawBasic() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['Автомобили', 'Общие доходы',],
+        {% for car in cars %}
+            {% for sum in sums %}
+                {% if car.pk == sum.car_id %}
+                    ['{{ car.mark }} {{ car.model }}', {{ sum.sum_price }}],
+                {% endif %}
+               {% endfor %}
+        {% endfor %}
+      ]);
+
+      var options = {
+        title: 'Общие доходы автомобилей',
+        chartArea: {width: '50%'},
+        hAxis: {
+          title: 'Общие доходы',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Автомобили'
+        }
+      };
+
+      var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+</script>
+{% endblock %}

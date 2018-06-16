@@ -1,0 +1,86 @@
+{% extends 'auto/basic.html' %}
+{% block title %}Добавление новой машины{% endblock %}
+
+{% block body %}
+<style>
+    input[type=text], select {
+    width: 50%;
+    padding: 6px 10px;
+    margin: 4px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+input[type=number], select {
+    width: 50%;
+    padding: 6px 10px;
+    margin: 4px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+input[type=submit] {
+    width: 100%;
+    background-color: #ff9b38;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+input[type=submit]:hover {
+    background-color: #ff8638;
+}
+</style>
+
+{% if wrong %}
+<h1>{{wrong}}</h1>
+{% else %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="container">
+            <h2 align="center" style="padding: 10px;">Добавление новой машины</h2>
+            {% if added %}
+            <p><b>Новое авто успешно добавлено!</b></p>
+            {% else %}
+                {% if error_message %}
+                <p><strong>{{ error_message }}</strong></p>
+                {% endif %}
+                <form class="form-horizontal" name="form1" role="form" action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                    {% csrf_token %}
+                        <div class="col-md-12 border" style=" padding: 50px;">
+                        {% for field in car_form %}
+                            <div class="form-group ">
+                                {{field.label_tag}}
+                                <div>{{field}}</div>
+                                {% if field.errors%}
+                                {% for error in field.errors %}
+                                <div class="alert alert-danger">
+                                    {{error}}
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                   <div class="col-md-12 align-items-center " style="padding: 30px;">
+                        <input type="submit" style="font-size: 24px;" value="Добавить авто">
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+<script>
+    $('label[for=id_owner_id], input#id_owner_id').hide();
+    $('label[for=id_bay_id], input#id_bay_id').hide();
+    document.forms['form1']['id_owner_id'].hidden = true;
+    document.forms['form1']['id_bay_id'].hidden = true;
+</script>
+{% endblock %}

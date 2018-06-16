@@ -1,0 +1,57 @@
+{% extends 'auto/basic.html' %}
+{% block title %}Статистика{% endblock %}
+{% block login_active %}active{% endblock %}
+
+{% block body %}
+{% if rents %}
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <div id="chart_div"></div>
+<div class="container">
+ <div class="row">
+   {% for rent in rents %}
+    <div class="col-md-5 border" style="padding:10px; margin:10px;">
+     <p>{{ rent.renter }}</p>
+     <p>Сроки: {{ rent.day_start }} {{ rent.start_time }} - {{ rent.day_end}} {{ rent.end_time }} </p>
+     <p>Место подачи: {{ rent.pickup_point}}</p>
+     <p>Место возвата: {{ rent.return_point }}</p>
+     {% if rent.notes %}
+     <p>Комментарий: {{ rent.notes }}</p>
+     {% endif%}
+    </div>
+   {% endfor %}
+  </div>
+</div>
+<script>
+google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawBasic);
+
+function drawBasic() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['Сроки', 'Цены',],
+      {% for rent in rents %}
+        ['{{ rent.day_start }} {{ rent.start_time }} - {{ rent.day_end }} {{ rent.end_time }}', {{ rent.price }}],
+        {% endfor %}
+      ]);
+
+      var options = {
+        title: 'Контракты аренд по автомобиле {{ car.mark }} {{ car.model }}',
+        chartArea: {width: '50%'},
+        hAxis: {
+          title: 'Цены контрактов',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Сроки аренд'
+        }
+      };
+
+      var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+</script>
+{% else %}
+<h1 align="center" style="padding:50px;">У автомобиля {{ car.mark }} {{ car.model }} <br>не зарегистрировано ни одного контракта</h1>
+{% endif %}
+{% endblock %}
